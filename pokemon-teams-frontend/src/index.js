@@ -32,18 +32,23 @@ function addPokemons(obj){
 function addOrRelease(){
   document.addEventListener('click', function(e){
     e.preventDefault()
-    let trainer_id = e.target.parentElement.dataset.id
+    let trainer_id = e.target.dataset.trainerId
     if (e.target.className === 'add-pokemon'){
       fetch(POKEMONS_URL, {method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ trainer_id: `${trainer_id}`})
-    })
+    }).then(res => res.json()).then(pokemon => {
+      document.querySelector(`[data-id="${trainer_id}"] ul`).innerHTML += `<li>${pokemon.nickname}
+      (${pokemon.species})<button class="release" data-pokemon-id="${pokemon.id}">Release</button></li>`})
+
     }
     else if (e.target.className === 'release'){
       let pokemonId = e.target.dataset.pokemonId
       fetch(POKEMONS_URL+`/${pokemonId}`, {
          method: 'DELETE',
          headers: {'Content-Type': 'application/json'}
+       }).then(res => res.json()).then(pokemon => {
+         e.target.parentElement.remove()
        })
     }
   })
