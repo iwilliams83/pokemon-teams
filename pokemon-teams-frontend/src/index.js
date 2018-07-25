@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', init)
+
 const BASE_URL = "http://localhost:3000"
 const TRAINERS_URL = `${BASE_URL}/trainers`
 const POKEMONS_URL = `${BASE_URL}/pokemons`
@@ -38,8 +39,15 @@ function addOrRelease(){
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ trainer_id: `${trainer_id}`})
     }).then(res => res.json()).then(pokemon => {
-      document.querySelector(`[data-id="${trainer_id}"] ul`).innerHTML += `<li>${pokemon.nickname}
-      (${pokemon.species})<button class="release" data-pokemon-id="${pokemon.id}">Release</button></li>`})
+      let list = document.querySelector(`[data-id="${trainer_id}"] ul`)
+      console.log(list.children)
+      if (list.children.length < 6){
+      list.innerHTML += `<li>${pokemon.nickname}
+      (${pokemon.species})<button class="release" data-pokemon-id="${pokemon.id}">Release
+      </button></li>`
+    }
+    else {throw new Error('Release a pokemon in order to add more!')}
+    })
 
     }
     else if (e.target.className === 'release'){
